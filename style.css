@@ -1,0 +1,127 @@
+/* Ensure the html and body elements fill the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a; /* fallback color */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    color: #fff;
+    /* Keep your desired padding for content inside the body */
+    padding: 20px;
+    /* Ensure the background fills the whole viewport */
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stats {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    margin-bottom: 30px;
+}
+
+button {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+button:hover:not(:disabled) {
+    background: #4a4a4a;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.thinker-btn {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+}
+
+.paradigm-btn {
+    background: linear-gradient(45deg, #8e44ad, #e74c3c);
+}
+
+#thoughts {
+    font-size: 2.5em;
+    color: #f1c40f;
+    margin: 10px 0;
+}
+
+.stats p {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+/* Pascal's Wager Styles */
+#pascal-wager-section {
+    margin-top: 30px;
+}
+
+#pascal-wager {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+#pascal-thinker-dropdown {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.wager-feedback {
+    margin-top: 10px;
+    min-height: 20px;
+    font-weight: bold;
+}
+
+/* Animations for Win/Lose Flash */
+@keyframes flashWin {
+    0% { box-shadow: 0 0 10px 5px green; }
+    50% { box-shadow: 0 0 20px 10px limegreen; }
+    100% { box-shadow: 0 0 10px 5px green; }
+}
+.flash-win {
+    animation: flashWin 1s ease-in-out;
+}
+
+@keyframes flashLose {
+    0% { box-shadow: 0 0 10px 5px red; }
+    50% { box-shadow: 0 0 20px 10px crimson; }
+    100% { box-shadow: 0 0 10px 5px red; }
+}
+.flash-lose {
+    animation: flashLose 1s ease-in-out;
+}
+
+.restart-container {
+    text-align: center;
+    margin-top: 50px;  /* Adjust this value to move the button further down */
+    padding-bottom: 20px;
+}

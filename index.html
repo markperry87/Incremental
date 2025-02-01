@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Philosophy Incremental</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="stats">
+      <h1>Philosophy Incremental</h1>
+      <p>Thoughts: <span id="thoughts">0</span></p>
+      <p>Thoughts per second: <span id="tps">0</span></p>
+      <p>Thoughts per minute: <span id="tpm">0</span></p>
+      <!-- New lines for Base TPS & Multiplier -->
+      <p>Base TPS: <span id="base-tps">0</span></p>
+      <p>Multiplier: <span id="multiplier">1</span></p>
+    </div>
+
+    <h2>Thinkers</h2>
+    <div class="grid" id="thinkers-container"></div>
+
+    <h2>Philosophical Paradigms</h2>
+    <div class="grid" id="paradigms-container"></div>
+
+    <!-- Wrapped Pascal's Wager Title & Section -->
+<div id="pascal-wager-section" style="display: none;">
+  <h2>Pascal's Wager</h2>
+  <div id="pascal-wager">
+    <p id="pascal-wager-text">Risk it all for a 50% chance to double your thinkers!</p>
+    <select id="pascal-thinker-dropdown"></select>
+    <button id="pascal-wager-btn">Place Wager</button>
+    <div id="pascal-wager-feedback" class="wager-feedback"></div>
+    <!-- New elements for the Level Up feature -->
+    <p id="pascal-levelup-instructions" style="display: none;">Increase the chance to win Pascal's Wager by 1 percentage point</p>
+    <button id="pascal-levelup-btn" style="display: none;"></button>
+  </div>
+</div>
+
+
+  <!-- Restart Button Container (moved further down the page) -->
+  <div class="restart-container">
+    <button id="restart-btn">Restart</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
