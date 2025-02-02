@@ -330,7 +330,12 @@ function updateUI() {
         button.style.display = isVisible ? 'block' : 'none';
     });
     pascalWagerSectionContainer.style.display = pascalWagerUnlocked ? 'block' : 'none';
-    updatePascalDropdown();
+    
+    // Only update the dropdown if it's not currently focused.
+    if (document.activeElement !== pascalDropdown) {
+        updatePascalDropdown();
+    }
+    
     updateBackground();
     updatePascalWagerTextAndLevelUpUI();
 }
