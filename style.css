@@ -1,4 +1,4 @@
-/* Ensure the html and body elements fill the viewport */
+/* General Page Styles */
 html, body {
     height: 100%;
     margin: 0;
@@ -7,14 +7,12 @@ html, body {
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #1a1a1a; /* fallback color */
+    background-color: #1a1a1a;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     color: #fff;
-    /* Keep your desired padding for content inside the body */
     padding: 20px;
-    /* Ensure the background fills the whole viewport */
     min-height: 100vh;
 }
 
@@ -38,6 +36,7 @@ body {
     margin-bottom: 30px;
 }
 
+/* Button Styles */
 button {
     background: #3a3a3a;
     color: #fff;
@@ -78,18 +77,25 @@ button:disabled {
     font-size: 1.2em;
 }
 
-/* Pascal's Wager Styles */
-#pascal-wager-section {
-    margin-top: 30px;
+/* Section Title Alignment (centered for consistency) */
+#pascal-wager-section h2,
+#metaphilosophy-section h2,
+#auto-system-section h2 {
+    text-align: center;
 }
 
-#pascal-wager {
+/* Box Styles for All Three UI Sections */
+#pascal-wager-box,
+#metaphilosophy-box,
+#auto-system-box {
     background: #2a2a2a;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
+    margin: 0 auto;
 }
 
+/* Pascal's Wager Specific Styles */
 #pascal-thinker-dropdown {
     margin-right: 10px;
     padding: 5px;
@@ -99,6 +105,39 @@ button:disabled {
     margin-top: 10px;
     min-height: 20px;
     font-weight: bold;
+}
+
+/* Auto System Panel Styles */
+.auto-system-panel {
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.auto-system-panel label {
+    display: block;
+    margin: 5px 0 2px;
+    font-size: 0.9em;
+}
+
+.auto-system-panel input,
+.auto-system-panel select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.auto-system-toggle {
+    margin-top: 5px;
+}
+
+/* Metaphilosophy Option Styles */
+.metaphilosophy-option {
+    background: #444;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 /* Animations for Win/Lose Flash */
@@ -122,6 +161,6 @@ button:disabled {
 
 .restart-container {
     text-align: center;
-    margin-top: 50px;  /* Adjust this value to move the button further down */
+    margin-top: 50px;
     padding-bottom: 20px;
 }
