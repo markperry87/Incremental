@@ -5,31 +5,34 @@
 const thoughtsElement = document.getElementById("thoughts");
 const tpsElement = document.getElementById("tps");
 const tpmElement = document.getElementById("tpm");
-// New elements for Base TPS & Multiplier
 const baseTpsElement = document.getElementById("base-tps");
 const multiplierElement = document.getElementById("multiplier");
 
 const thinkersContainer = document.getElementById("thinkers-container");
 const paradigmsContainer = document.getElementById("paradigms-container");
 
-// Pascal's Wager elements
 const pascalWagerSectionContainer = document.getElementById("pascal-wager-section");
 const pascalWagerSection = document.getElementById("pascal-wager");
 const pascalWagerText = document.getElementById("pascal-wager-text");
 const pascalDropdown = document.getElementById("pascal-thinker-dropdown");
 const pascalWagerButton = document.getElementById("pascal-wager-btn");
 const pascalFeedback = document.getElementById("pascal-wager-feedback");
-// New elements for Level Up Pascal's Wager
 const pascalLevelUpInstructions = document.getElementById("pascal-levelup-instructions");
 const pascalLevelUpButton = document.getElementById("pascal-levelup-btn");
 
-// Restart button element
+const autoSystemSection = document.getElementById("auto-system-section");
+const buyAutoSystemBtn = document.getElementById("buy-auto-system-btn");
+const autoSystemContainer = document.getElementById("auto-system-container");
+
 const restartButton = document.getElementById("restart-btn");
+
+// New elements for Metaphilosophy
+const metaphilosophySection = document.getElementById("metaphilosophy-section");
+const metaphilosophyContainer = document.getElementById("metaphilosophy-container");
 
 /*************************
  *   BACKGROUND SETTINGS *
  *************************/
-// Map each paradigm name to its corresponding background image.
 const backgroundImages = {
     default: 'images/default-background.webp',
     "Animism": 'images/paradigm1-background.webp',
@@ -47,9 +50,6 @@ const backgroundImages = {
     "Cosmic Pantheism": 'images/paradigm13-background.webp'
 };
 
-/**
- * Updates the background image based on purchased paradigms.
- */
 function updateBackground() {
     let highestPurchasedIndex = -1;
     for (let i = 0; i < paradigms.length; i++) {
@@ -77,34 +77,26 @@ let fractionalThoughts = 0;
 let lastFrameTime = 0;
 let lastUIUpdate = 0;
 
-/**
- * Tracks whether Pascal's Wager (the ability to wager) is unlocked.
- * It unlocks when the first Storyteller (id === 1) is purchased.
- */
 let pascalWagerUnlocked = false;
-/**
- * Tracks whether the Level Up feature for Pascal's Wager is unlocked.
- * It unlocks when the first Priest (id === 2) is purchased.
- */
 let pascalLevelUpUnlocked = false;
-
-/**
- * Pascal's Wager win chance and upgrade level.
- * Base win chance is 50%. Each upgrade increases by 1%.
- */
-let pascalWagerLevel = 0; // 0 means 50%, 1 means 51%, etc.
+let pascalWagerLevel = 0;
 function getPascalWinChance() {
     return 0.50 + 0.01 * pascalWagerLevel;
 }
-
-/**
- * Array of upgrade costs for each 1% increase.
- * There are 15 values, corresponding to upgrades from 50% up to 65%.
- */
 const pascalUpgradeCosts = [
     900, 4650, 24000, 123750, 637500,
     2625000, 13500000, 69375000, 427500000, 2925000000,
     6370000000, 13800000000, 30000000000, 307500000000, 3150000000000
+];
+
+/*************************
+ *  AUTO BUY & WAGER STATE
+ *************************/
+let autoSystemUnlocked = false;
+let autoSystems = [];
+const autoSystemCosts = [
+    73875, 380625, 1631250, 8062500, 41437500,
+    248437500, 1676250000, 16425000000, 168750000000, 1732500000000
 ];
 
 /*************************
@@ -119,7 +111,7 @@ const thinkers = [
     { id: 5, name: 'Scientist', count: 0, baseCost: 75000, costScaling: 2.3, baseTPS: 32, unlocked: false },
     { id: 6, name: 'Enlightenment Thinker', count: 0, baseCost: 375000, costScaling: 2.4, baseTPS: 64, unlocked: false },
     { id: 7, name: 'Academic', count: 0, baseCost: 1.5e6, costScaling: 2.5, baseTPS: 128, unlocked: false },
-    { id: 8, name: 'Psychologist', count: 0, baseCost: 7.5e6, costScaling: 2.6, baseTPS: 256, unlocked: false },
+    { id: 8, name: 'Psychologist', count: 5000, baseCost: 7.5e6, costScaling: 2.6, baseTPS: 256, unlocked: false },
     { id: 9, name: 'Computer Scientist', count: 0, baseCost: 3.75e7, costScaling: 2.7, baseTPS: 512, unlocked: false },
     { id: 10, name: 'AI Researcher', count: 0, baseCost: 2.25e8, costScaling: 2.8, baseTPS: 1024, unlocked: false },
     { id: 11, name: 'Quantum Thinker', count: 0, baseCost: 1.5e9, costScaling: 2.9, baseTPS: 2048, unlocked: false },
@@ -145,6 +137,29 @@ const paradigms = [
 ];
 
 /*************************
+ *  METAPHILOSOPHY STATE
+ *************************/
+// New system that multiplies the paradigm multipliers.
+// It unlocks after purchasing "Renaissance Humanism".
+const metaphilosophies = [
+  { name: "Divine Reason", cost: 7.5e7, multiplier: 2, purchased: false },
+  { name: "Empiricism", cost: 7.5e9, multiplier: 2, purchased: false },
+  { name: "Multiplicity of Truths", cost: 7.5e11, multiplier: 2, purchased: false },
+  { name: "Probabilistic Ontology", cost: 7.5e13, multiplier: 3, purchased: false },
+  { name: "Omniconsciousness", cost: 7.5e15, multiplier: 3, purchased: false }
+];
+
+function calculateMetaphilosophyMultiplier() {
+    let multiplier = 1;
+    for (let i = 0; i < metaphilosophies.length; i++) {
+        if (metaphilosophies[i].purchased) {
+            multiplier *= metaphilosophies[i].multiplier;
+        }
+    }
+    return multiplier;
+}
+
+/*************************
  *   SAVE & LOAD LOGIC   *
  *************************/
 function saveGame() {
@@ -162,7 +177,10 @@ function saveGame() {
         paradigms: paradigms.map(p => ({
             name: p.name,
             purchased: p.purchased
-        }))
+        })),
+        autoSystemUnlocked: autoSystemUnlocked,
+        autoSystems: autoSystems,
+        metaphilosophies: metaphilosophies
     };
     localStorage.setItem('philosophyIncrementalSave', JSON.stringify(save));
 }
@@ -176,7 +194,17 @@ function loadGame() {
         pascalWagerUnlocked = save.pascalWagerUnlocked || false;
         pascalLevelUpUnlocked = save.pascalLevelUpUnlocked || false;
         pascalWagerLevel = save.pascalWagerLevel || 0;
-        
+        autoSystemUnlocked = save.autoSystemUnlocked || false;
+        if (save.autoSystems) {
+            autoSystems = save.autoSystems;
+        }
+        if (save.metaphilosophies) {
+            for (let i = 0; i < metaphilosophies.length; i++) {
+                if (save.metaphilosophies[i] !== undefined) {
+                    metaphilosophies[i].purchased = save.metaphilosophies[i].purchased;
+                }
+            }
+        }
         if (save.thinkers) {
             save.thinkers.forEach(savedThinker => {
                 const thinker = thinkers.find(t => t.id === savedThinker.id);
@@ -200,12 +228,6 @@ function loadGame() {
 /*************************
  *   UNLOCK INITIALIZATION
  *************************/
-/**
- * Marks thinkers as unlocked if count > 0 and unlocks the next thinker.
- * Additionally:
- *  - If a Storyteller (id === 1) is purchased, unlock Pascal's Wager (i.e. wagering becomes available).
- *  - If a Priest (id === 2) is purchased, unlock the Level Up Pascal's Wager feature.
- */
 function initializeUnlockedThinkers() {
     for (let i = 0; i < thinkers.length; i++) {
         if (thinkers[i].count > 0) {
@@ -230,7 +252,6 @@ function initializeUnlockedThinkers() {
 function initializeUI() {
     initializeUnlockedThinkers();
 
-    // Create thinker buttons
     thinkers.forEach(thinker => {
         const button = document.createElement('button');
         button.className = 'thinker-btn';
@@ -246,7 +267,6 @@ function initializeUI() {
         }
     });
 
-    // Create paradigm buttons
     paradigms.forEach((paradigm, index) => {
         const button = document.createElement('button');
         button.className = 'paradigm-btn';
@@ -262,11 +282,195 @@ function initializeUI() {
         }
     });
 
-    // Set up event listeners
     thinkersContainer.addEventListener('click', handleThinkerPurchase);
     paradigmsContainer.addEventListener('click', handleParadigmPurchase);
     pascalWagerButton.addEventListener('click', handlePascalWager);
     pascalLevelUpButton.addEventListener('click', handlePascalLevelUp);
+    buyAutoSystemBtn.addEventListener('click', handleBuyAutoSystem);
+
+    if (autoSystemUnlocked) {
+        autoSystemSection.style.display = 'block';
+        updateAutoSystemUI();
+    }
+}
+
+/*************************
+ *   METAPHILOSOPHY UI    *
+ *************************/
+function updateMetaphilosophyUI() {
+    // Only show if "Renaissance Humanism" is purchased.
+    const renHumanism = paradigms.find(p => p.name === "Renaissance Humanism");
+    if (!renHumanism || !renHumanism.purchased) {
+        metaphilosophySection.style.display = 'none';
+        return;
+    }
+    metaphilosophySection.style.display = 'block';
+
+    let html = `<p>Metaphilosophy Multiplier: ${calculateMetaphilosophyMultiplier().toFixed(2)}x</p>`;
+    const purchased = metaphilosophies.filter(meta => meta.purchased);
+    if (purchased.length > 0) {
+        html += `<p>Purchased: ${purchased.map(meta => meta.name).join(', ')}</p>`;
+    }
+    const nextMeta = metaphilosophies.find(meta => !meta.purchased);
+    if (nextMeta) {
+        // Disable the button if the player can't afford it.
+        const disabledAttribute = thoughts < nextMeta.cost ? "disabled" : "";
+        html += `
+          <div class="metaphilosophy-option">
+            <p><strong>${nextMeta.name}</strong></p>
+            <p>Cost: ${formatNumber(nextMeta.cost)} Thoughts</p>
+            <p>Multiplier: ${nextMeta.multiplier}x</p>
+            <button id="buy-metaphilosophy-btn" ${disabledAttribute}>Buy ${nextMeta.name}</button>
+          </div>
+        `;
+    } else {
+        html += `<p>All Metaphilosophy upgrades purchased!</p>`;
+    }
+    metaphilosophyContainer.innerHTML = html;
+
+    const buyMetaBtn = document.getElementById("buy-metaphilosophy-btn");
+    if (buyMetaBtn && nextMeta) {
+        buyMetaBtn.addEventListener("click", () => {
+            // (Now the button should be enabled only if thoughts >= nextMeta.cost.)
+            thoughts -= nextMeta.cost;
+            nextMeta.purchased = true;
+            // Remove focus so that updateUI will re-render the section immediately.
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            updateUI();
+        });
+    }
+}
+
+/*************************
+ *   AUTO SYSTEM UI   *
+ *************************/
+function updateAutoSystemUI() {
+    const nextCost = autoSystemCosts[autoSystems.length];
+    if (nextCost !== undefined) {
+        buyAutoSystemBtn.textContent = `Buy New Auto System (Cost: ${formatNumber(nextCost)} thoughts)`;
+        buyAutoSystemBtn.disabled = thoughts < nextCost;
+    } else {
+        buyAutoSystemBtn.style.display = 'none';
+    }
+    autoSystemContainer.innerHTML = '';
+    autoSystems.forEach((system, index) => {
+        const panel = document.createElement('div');
+        panel.className = 'auto-system-panel';
+        panel.innerHTML = `
+          <strong>Auto System ${index + 1}</strong><br>
+          <label>Assign Thinker:</label>
+          <select class="auto-thinker-select" data-index="${index}"></select>
+          <label>Auto-Buy Stop Count:</label>
+          <input type="number" class="auto-buy-stop" data-index="${index}" value="${system.autoBuyStop}" min="0">
+          <label>Auto-Wager Start Count:</label>
+          <input type="number" class="auto-wager-start" data-index="${index}" value="${system.autoWagerStart}" min="0">
+          <label>Auto-Wager Stop Count:</label>
+          <input type="number" class="auto-wager-stop" data-index="${index}" value="${system.autoWagerStop}" min="0">
+          <label class="auto-system-toggle">
+            <input type="checkbox" class="auto-enabled" data-index="${index}" ${system.enabled ? "checked" : ""}>
+            Enabled
+          </label>
+        `;
+        autoSystemContainer.appendChild(panel);
+        const select = panel.querySelector('.auto-thinker-select');
+        thinkers.forEach(t => {
+            if (t.id === 0) return;
+            const alreadyAssigned = autoSystems.some((sys, i) => sys.enabled && sys.thinkerId === t.id && i !== index);
+            if (t.unlocked && (!alreadyAssigned || t.id === system.thinkerId)) {
+                const option = document.createElement('option');
+                option.value = t.id;
+                option.textContent = t.name;
+                select.appendChild(option);
+            }
+        });
+        if (system.thinkerId !== undefined && system.thinkerId !== null) {
+            select.value = system.thinkerId;
+        } else {
+            if (select.options.length > 0) {
+                system.thinkerId = parseInt(select.options[0].value);
+                select.value = system.thinkerId;
+            }
+        }
+    });
+    document.querySelectorAll('.auto-thinker-select').forEach(select => {
+        select.addEventListener('change', e => {
+            const idx = e.target.dataset.index;
+            autoSystems[idx].thinkerId = parseInt(e.target.value);
+            updateAutoSystemUI();
+        });
+    });
+    document.querySelectorAll('.auto-buy-stop').forEach(input => {
+        input.addEventListener('change', e => {
+            const idx = e.target.dataset.index;
+            autoSystems[idx].autoBuyStop = Math.max(0, parseInt(e.target.value));
+            if (autoSystems[idx].autoWagerStart < autoSystems[idx].autoBuyStop) {
+                autoSystems[idx].autoWagerStart = autoSystems[idx].autoBuyStop;
+                e.target.parentElement.querySelector('.auto-wager-start').value = autoSystems[idx].autoWagerStart;
+            }
+        });
+    });
+    document.querySelectorAll('.auto-wager-start').forEach(input => {
+        input.addEventListener('change', e => {
+            const idx = e.target.dataset.index;
+            autoSystems[idx].autoWagerStart = Math.max(autoSystems[idx].autoBuyStop, parseInt(e.target.value));
+            e.target.value = autoSystems[idx].autoWagerStart;
+        });
+    });
+    document.querySelectorAll('.auto-wager-stop').forEach(input => {
+        input.addEventListener('change', e => {
+            const idx = e.target.dataset.index;
+            autoSystems[idx].autoWagerStop = Math.max(0, parseInt(e.target.value));
+        });
+    });
+    document.querySelectorAll('.auto-enabled').forEach(input => {
+        input.addEventListener('change', e => {
+            const idx = e.target.dataset.index;
+            autoSystems[idx].enabled = e.target.checked;
+        });
+    });
+}
+
+/*************************
+ *   AUTO SYSTEM LOGIC   *
+ *************************/
+function updateAutoSystems(currentTime) {
+    autoSystems.forEach(system => {
+        if (!system.enabled) return;
+        const thinker = thinkers.find(t => t.id === system.thinkerId);
+        if (!thinker) return;
+        if (thinker.count < system.autoBuyStop) {
+            const cost = Math.floor(thinker.baseCost * Math.pow(thinker.costScaling, thinker.count));
+            if (thoughts >= cost) {
+                thoughts -= cost;
+                thinker.count++;
+                animateThoughtCounter();
+            }
+        }
+        if (thinker.count >= system.autoWagerStart && thinker.count < system.autoWagerStop) {
+            if (!system.lastWagerTime || currentTime - system.lastWagerTime >= 1000) {
+                system.lastWagerTime = currentTime;
+                const winChance = getPascalWinChance();
+                const roll = Math.random();
+                if (roll < winChance) {
+                    const oldCount = thinker.count;
+                    thinker.count *= 2;
+                    flashThinkerButton(thinker.id, true);
+                } else {
+                    thinker.count = 0;
+                    flashThinkerButton(thinker.id, false);
+                    if (system.autoBuyStop > 0) {
+                        const repurchaseCost = Math.floor(thinker.baseCost * Math.pow(thinker.costScaling, thinker.count));
+                        if (thoughts >= repurchaseCost) {
+                            thoughts -= repurchaseCost;
+                            thinker.count = 1;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 /*************************
@@ -284,6 +488,7 @@ function gameLoop(currentTime) {
         displayedThoughts = thoughts;
         thoughtsElement.textContent = formatNumber(displayedThoughts);
     }
+    updateAutoSystems(currentTime);
     updateUI();
     requestAnimationFrame(gameLoop);
 }
@@ -306,11 +511,12 @@ function updateUI() {
     thinkers.forEach(thinker => {
         const button = document.querySelector(`[data-id="${thinker.id}"]`);
         if (!button) return;
+        const autoControlled = autoSystems.some(sys => sys.enabled && sys.thinkerId === thinker.id);
         button.style.display = thinker.unlocked ? 'block' : 'none';
         const cost = Math.floor(thinker.baseCost * Math.pow(thinker.costScaling, thinker.count));
         button.querySelector('.cost').textContent = formatNumber(cost);
         button.querySelector('.count').textContent = thinker.count;
-        button.disabled = thoughts < cost;
+        button.disabled = thoughts < cost || autoControlled;
     });
     paradigms.forEach((paradigm, index) => {
         const button = document.querySelector(`[data-name="${paradigm.name}"]`);
@@ -330,14 +536,31 @@ function updateUI() {
         button.style.display = isVisible ? 'block' : 'none';
     });
     pascalWagerSectionContainer.style.display = pascalWagerUnlocked ? 'block' : 'none';
-    
-    // Only update the dropdown if it's not currently focused.
     if (document.activeElement !== pascalDropdown) {
-        updatePascalDropdown();
+        const selectedValue = pascalDropdown.value;
+        pascalDropdown.innerHTML = '';
+        thinkers
+            .filter(t => t.id !== 0 && t.count > 0 && !autoSystems.some(sys => sys.enabled && sys.thinkerId === t.id))
+            .forEach(t => {
+                const option = document.createElement('option');
+                option.value = t.id;
+                option.textContent = `${t.name} (Owned: ${t.count})`;
+                pascalDropdown.appendChild(option);
+            });
+        if ([...pascalDropdown.options].some(opt => opt.value == selectedValue)) {
+            pascalDropdown.value = selectedValue;
+        }
     }
     
     updateBackground();
     updatePascalWagerTextAndLevelUpUI();
+    // Only update Metaphilosophy UI if no element inside it is focused.
+    if (!(document.activeElement && metaphilosophySection.contains(document.activeElement))) {
+         updateMetaphilosophyUI();
+    }
+    if (autoSystemUnlocked && !autoSystemSection.contains(document.activeElement)) {
+         updateAutoSystemUI();
+    }
 }
 
 /*************************
@@ -347,6 +570,7 @@ function handleThinkerPurchase(event) {
     const button = event.target.closest('.thinker-btn');
     if (!button) return;
     const thinker = thinkers.find(t => t.id == button.dataset.id);
+    if (autoSystems.some(sys => sys.enabled && sys.thinkerId === thinker.id)) return;
     const cost = Math.floor(thinker.baseCost * Math.pow(thinker.costScaling, thinker.count));
     if (thoughts >= cost) {
         thoughts -= cost;
@@ -358,13 +582,17 @@ function handleThinkerPurchase(event) {
             if (nextThinker) {
                 nextThinker.unlocked = true;
             }
-            // Unlock Pascal's Wager when Storyteller (id === 1) is purchased.
             if (thinker.id === 1) {
                 pascalWagerUnlocked = true;
             }
-            // Unlock Level Up Pascal's Wager when Priest (id === 2) is purchased.
             if (thinker.id === 2) {
                 pascalLevelUpUnlocked = true;
+            }
+            // Unlock auto system when first Alchemist is purchased.
+            if (thinker.id === 4 && !autoSystemUnlocked) {
+                autoSystemUnlocked = true;
+                autoSystemSection.style.display = 'block';
+                updateAutoSystemUI();
             }
         }
     }
@@ -388,7 +616,7 @@ function updatePascalDropdown() {
     const selectedValue = pascalDropdown.value;
     pascalDropdown.innerHTML = '';
     thinkers
-        .filter(t => t.id !== 0 && t.count > 0)
+        .filter(t => t.id !== 0 && t.count > 0 && !autoSystems.some(sys => sys.enabled && sys.thinkerId === t.id))
         .forEach(t => {
             const option = document.createElement('option');
             option.value = t.id;
@@ -419,9 +647,6 @@ function handlePascalWager() {
     updateUI();
 }
 
-/*************************
- *   LEVEL UP HANDLER    *
- *************************/
 function handlePascalLevelUp() {
     if (pascalWagerLevel >= pascalUpgradeCosts.length) {
         pascalFeedback.textContent = "Maximum Pascal's Wager upgrade reached!";
@@ -435,6 +660,25 @@ function handlePascalLevelUp() {
         updateUI();
     } else {
         pascalFeedback.textContent = `Not enough thoughts to upgrade Pascal's Wager (Cost: ${formatNumber(cost)}).`;
+    }
+}
+
+/*************************
+ *   AUTO SYSTEM PURCHASE
+ *************************/
+function handleBuyAutoSystem() {
+    const cost = autoSystemCosts[autoSystems.length];
+    if (thoughts >= cost) {
+        thoughts -= cost;
+        autoSystems.push({
+            thinkerId: null,
+            autoBuyStop: 0,
+            autoWagerStart: 0,
+            autoWagerStop: 0,
+            enabled: false,
+            lastWagerTime: 0
+        });
+        updateAutoSystemUI();
     }
 }
 
@@ -473,7 +717,8 @@ function calculateMultiplier() {
             total += paradigms[i].multiplier;
         }
     }
-    return total > 0 ? total : 1;
+    total = total > 0 ? total : 1;
+    return total * calculateMetaphilosophyMultiplier();
 }
 
 function calculateBaseTPS() {
@@ -513,18 +758,9 @@ function formatMultiplier(num) {
     }
 }
 
-/**
- * Updates the Pascal's Wager section text and Level Up UI.
- * For wagering, the text shows the current win chance.
- * For leveling up, above the level-up button an instruction is displayed,
- * and the button itself shows only the cost.
- */
 function updatePascalWagerTextAndLevelUpUI() {
-    // Update wagering text with current win chance.
     const currentChance = Math.round(getPascalWinChance() * 100);
     pascalWagerText.textContent = `Risk it all for a ${currentChance}% chance to double your thinkers!`;
-    
-    // Show level up instructions and button only if the Level Up feature is unlocked (i.e. after Priest is purchased)
     if (pascalLevelUpUnlocked && pascalWagerLevel < pascalUpgradeCosts.length) {
         pascalLevelUpInstructions.style.display = 'block';
         pascalLevelUpButton.style.display = 'inline-block';
