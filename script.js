@@ -111,7 +111,7 @@ const thinkers = [
     { id: 5, name: 'Scientist', count: 0, baseCost: 75000, costScaling: 2.3, baseTPS: 32, unlocked: false },
     { id: 6, name: 'Enlightenment Thinker', count: 0, baseCost: 375000, costScaling: 2.4, baseTPS: 64, unlocked: false },
     { id: 7, name: 'Academic', count: 0, baseCost: 1.5e6, costScaling: 2.5, baseTPS: 128, unlocked: false },
-    { id: 8, name: 'Psychologist', count: 5000, baseCost: 7.5e6, costScaling: 2.6, baseTPS: 256, unlocked: false },
+    { id: 8, name: 'Psychologist', count: 0, baseCost: 7.5e6, costScaling: 2.6, baseTPS: 256, unlocked: false },
     { id: 9, name: 'Computer Scientist', count: 0, baseCost: 3.75e7, costScaling: 2.7, baseTPS: 512, unlocked: false },
     { id: 10, name: 'AI Researcher', count: 0, baseCost: 2.25e8, costScaling: 2.8, baseTPS: 1024, unlocked: false },
     { id: 11, name: 'Quantum Thinker', count: 0, baseCost: 1.5e9, costScaling: 2.9, baseTPS: 2048, unlocked: false },
