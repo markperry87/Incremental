@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Philosophy Incremental</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
@@ -24,24 +24,45 @@
     <h2>Philosophical Paradigms</h2>
     <div class="grid" id="paradigms-container"></div>
 
-    <!-- Wrapped Pascal's Wager Title & Section -->
-<div id="pascal-wager-section" style="display: none;">
-  <h2>Pascal's Wager</h2>
-  <div id="pascal-wager">
-    <p id="pascal-wager-text">Risk it all for a 50% chance to double your thinkers!</p>
-    <select id="pascal-thinker-dropdown"></select>
-    <button id="pascal-wager-btn">Place Wager</button>
-    <div id="pascal-wager-feedback" class="wager-feedback"></div>
-    <!-- New elements for the Level Up feature -->
-    <p id="pascal-levelup-instructions" style="display: none;">Increase the chance to win Pascal's Wager by 1 percentage point</p>
-    <button id="pascal-levelup-btn" style="display: none;"></button>
-  </div>
-</div>
+    <!-- Metaphilosophy Section (unlocked after purchasing Renaissance Humanism) -->
+    <div id="metaphilosophy-section" style="display: none;">
+      <h2>Metaphilosophy</h2>
+      <div id="metaphilosophy-box">
+        <div id="metaphilosophy-container"></div>
+      </div>
+    </div>
 
+    <!-- Pascal's Wager Section -->
+    <div id="pascal-wager-section" style="display: none;">
+      <h2>Pascal's Wager</h2>
+      <div id="pascal-wager-box">
+        <div id="pascal-wager">
+          <p id="pascal-wager-text">Risk it all for a 50% chance to double your thinkers!</p>
+          <select id="pascal-thinker-dropdown"></select>
+          <button id="pascal-wager-btn">Place Wager</button>
+          <div id="pascal-wager-feedback" class="wager-feedback"></div>
+          <!-- Level Up UI -->
+          <p id="pascal-levelup-instructions" style="display: none;">
+            Increase the chance to win Pascal's Wager by 1 percentage point
+          </p>
+          <button id="pascal-levelup-btn" style="display: none;"></button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Restart Button Container (moved further down the page) -->
-  <div class="restart-container">
-    <button id="restart-btn">Restart</button>
+    <!-- Auto Buy & Wager System Section -->
+    <div id="auto-system-section" style="display: none;">
+      <h2>Auto Buy & Wager Systems</h2>
+      <div id="auto-system-box">
+        <button id="buy-auto-system-btn"></button>
+        <div id="auto-system-container"></div>
+      </div>
+    </div>
+
+    <!-- Restart Button -->
+    <div class="restart-container">
+      <button id="restart-btn">Restart</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
